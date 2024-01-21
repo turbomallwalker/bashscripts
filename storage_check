@@ -1,0 +1,41 @@
+#!/bin/bash 
+  
+# Specify Bash as the interpreter
+ 
+echo "Beginning storage check..."  
+# Print starting message
+ 
+report_dir=~/reports # add your directory path you want here.  
+# Set report directory in home folder 
+
+# you can change the name of directory you want below as well.
+ if [ ! -d "$report_dir" ]; then 
+  mkdir -p "$report_dir"
+ fi
+ # Check if report dir exists, create it if needed
+
+ part=/dev/sda1
+# Set variable for disk partition 
+
+ disk_usage_percent=$(df -h | grep "$part" | awk '{print $5}' | cut -d'%' -f1)
+# Get disk usage percentage for partition
+ 
+ echo "$part is ${disk_usage_percent}% full."
+ # Print message with disk usage 
+
+ date=$(date +%Y-%m-%d)
+# Get current date in YYYY-MM-DD format
+ 
+ report_file="storage_report_$date.txt"
+ # Construct report file name with date
+
+# Save main output to report file
+exec > "$report_dir/$report_file"
+
+echo "Date: $(date)"
+echo "-------------" 
+echo "$part is ${disk_usage_percent}% full."
+# Print info to report file
+
+# Print completion message to stderr
+echo "Storage check complete." >&2
